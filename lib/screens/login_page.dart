@@ -1,7 +1,9 @@
+import 'package:events_manager_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,8 +14,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String email = '';
-  String password = '';
+  String loginEmail = '';
+  String loginPassword = '';
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -42,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextField(
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (val){
-                    email=val;
+                    loginEmail=val;
                   },
                   decoration: InputDecoration(
                     hintText: 'Enter your email id: ',
@@ -66,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextField(
                   obscureText: true,
                   onChanged: (val){
-                    password=val;
+                    loginPassword=val;
                   },
                   decoration: InputDecoration(
                     hintText: 'Enter your password: ',
@@ -91,9 +93,12 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () async{
                     try {
                       UserCredential userCredential = await auth.signInWithEmailAndPassword(
-                          email: email,
-                          password: password,
+                          email: loginEmail,
+                          password: loginPassword,
                       );
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString('email', loginEmail);
+                      email = loginEmail;
                       Navigator.pushNamed(context, HomeScreen.id);
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
@@ -125,6 +130,9 @@ class _LoginPageState extends State<LoginPage> {
                             idToken: googleAuth.idToken
                         );
                         auth.signInWithCredential(credential);
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setString('email', googleUser.email);
+                        email = googleUser.email;
                         Navigator.pushNamed(context, HomeScreen.id);
                       });
                     }

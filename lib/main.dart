@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/signup_page.dart';
 import 'screens/home_screen.dart';
@@ -8,8 +9,12 @@ import 'screens/login_page.dart';
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  email = prefs.getString('email');
   runApp(MyApp());
 }
+
+var email;
 
 class MyApp extends StatelessWidget {
 
@@ -23,7 +28,8 @@ class MyApp extends StatelessWidget {
         LoginPage.id : (context) => LoginPage(),
         HomeScreen.id : (context) => HomeScreen(),
       },
-      initialRoute: WelcomeScreen.id,
+      //initialRoute: email != null ? HomeScreen.id : WelcomeScreen.id,
+      home: email != null ? HomeScreen(): WelcomeScreen(),
     );
   }
 }

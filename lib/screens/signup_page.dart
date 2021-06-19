@@ -1,6 +1,8 @@
+import 'package:events_manager_app/main.dart';
 import 'package:events_manager_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpPage extends StatefulWidget {
   static const String id = '/signup';
@@ -11,8 +13,8 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
 
-  String email = '';
-  String password = '';
+  String signUpEmail = '';
+  String signUpPassword = '';
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -41,7 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 TextField(
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (val){
-                    email=val;
+                    signUpEmail=val;
                   },
                   decoration: InputDecoration(
                     hintText: 'Enter your email id: ',
@@ -65,7 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 TextField(
                   obscureText: true,
                   onChanged: (val){
-                    password=val;
+                    signUpPassword=val;
                   },
                   decoration: InputDecoration(
                     hintText: 'Enter your password: ',
@@ -90,9 +92,12 @@ class _SignUpPageState extends State<SignUpPage> {
                   onPressed: () async{
                     try {
                       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-                          email: email,
-                          password: password,
+                          email: signUpEmail,
+                          password: signUpPassword,
                       );
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString('email', signUpEmail);
+                      email = signUpEmail;
                       Navigator.pushNamed(context, HomeScreen.id);
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'weak-password') {
