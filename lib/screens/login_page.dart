@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:events_manager_app/main.dart';
+import 'package:events_manager_app/screens/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -99,7 +101,8 @@ class _LoginPageState extends State<LoginPage> {
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setString('email', loginEmail);
                       email = loginEmail;
-                      Navigator.pushNamed(context, HomeScreen.id);
+                      validateAdmin(email);
+                      Navigator.pushNamed(context, LoadingScreen.id);
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
                         print('No user found for that email.');
@@ -133,7 +136,31 @@ class _LoginPageState extends State<LoginPage> {
                         SharedPreferences prefs = await SharedPreferences.getInstance();
                         prefs.setString('email', googleUser.email);
                         email = googleUser.email;
-                        Navigator.pushNamed(context, HomeScreen.id);
+                        validateAdmin(email);
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(email)
+                            .get()
+                            .then((DocumentSnapshot documentSnapshot) {
+                          if (documentSnapshot.exists) {
+                            Navigator.pushNamed(context, LoadingScreen.id);
+                          }
+                          else{
+                            FirebaseFirestore.instance.collection('users')
+                                .doc(email)
+                                .set({
+                              'todo' : [],
+                              'email' : email,
+                            })
+                                .then((value) {
+                              Navigator.pushNamed(context, LoadingScreen.id);
+                            })
+                                .catchError((err) {
+                              print(err);
+                            });
+                          }
+                        });
+
                       });
                     }
                     catch (err){

@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:events_manager_app/main.dart';
 import 'package:events_manager_app/screens/home_screen.dart';
+import 'package:events_manager_app/screens/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -98,7 +100,20 @@ class _SignUpPageState extends State<SignUpPage> {
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setString('email', signUpEmail);
                       email = signUpEmail;
-                      Navigator.pushNamed(context, HomeScreen.id);
+                      validateAdmin(email);
+                      FirebaseFirestore.instance.collection('users')
+                        .doc(email)
+                        .set({
+                          'todo' : [],
+                          'email' : email,
+                        })
+                        .then((value) {
+                          Navigator.pushNamed(context, LoadingScreen.id);
+                        })
+                        .catchError((err) {
+                          print(err);
+                        });
+
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'weak-password') {
                         print('The password provided is too weak.');

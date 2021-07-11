@@ -5,6 +5,7 @@ import 'package:events_manager_app/screens/todo_screen.dart';
 import 'package:events_manager_app/screens/add_event_screen.dart';
 import 'package:events_manager_app/screens/edit_event_screen.dart';
 import 'package:events_manager_app/utils/events.dart';
+import 'package:events_manager_app/utils/todo.dart';
 import 'package:events_manager_app/main.dart';
 import 'package:events_manager_app/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +14,14 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class HomeScreen extends StatefulWidget {
-  static const String id = '/home';
+class AdminHomeScreen extends StatefulWidget {
+  static const String id = '/admin';
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _AdminHomeScreenState createState() => _AdminHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -38,6 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    setState(() {
+      loadEvents();
+    });
   }
 
   @override
@@ -105,6 +109,14 @@ class _HomeScreenState extends State<HomeScreen> {
           'Home',
         ),
         actions: [
+          IconButton(
+            onPressed: (){
+              Navigator.pushNamed(context, AddEventScreen.id);
+            },
+            icon: Icon(
+              Icons.add,
+            ),
+          ),
           IconButton(
             onPressed: (){
               Navigator.pushNamed(context, ToDoScreen.id);
@@ -178,6 +190,39 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: ListTile(
                         onTap: () => print('${value[index]}'),
                         title: Text('${value[index]}'),
+                        leading: IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                          ),
+                          onPressed: (){
+                            editEventTitle = value[index].title;
+                            editEventUid = value[index].uid;
+                            editEventDate = _focusedDay;
+                            Navigator.pushNamed(context, EditEventScreen.id);
+                          },
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(
+                              Icons.playlist_add
+                          ),
+                          onPressed: (){
+                            if(!myToDo.contains(value[index].uid)){
+                              myToDo.add(value[index].uid);
+                              FirebaseFirestore.instance.collection('users')
+                                  .doc(email)
+                                  .update({
+                                'todo' : myToDo,
+                              })
+                                  .then((value) {
+                                print('Added');
+                                Navigator.pushNamed(context, LoadingScreen.id);
+                              })
+                                  .catchError((err) {
+                                print(err);
+                              });
+                            }
+                          },
+                        ),
                       ),
                     );
                   },
@@ -193,7 +238,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Icons.refresh,
         ),
         onPressed: (){
-          Phoenix.rebirth(context);
+          RestartWidget.restartApp(context);
+          // Phoenix.rebirth(context);
         },
       ),
     );
