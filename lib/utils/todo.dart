@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:events_manager_app/main.dart';
+import 'package:events_manager_app/screens/admin_home_screen.dart';
 import 'package:events_manager_app/utils/events.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ Future<void> loadToDo() async{
   for(var user in allToDo){
     if(user['email'] == email){
       myToDo = user['todo'];
+      userName = user['name'];
     }
   }
   print(myToDo);

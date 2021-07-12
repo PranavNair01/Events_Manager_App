@@ -96,20 +96,29 @@ class _EditEventScreenState extends State<EditEventScreen> {
                     int month = int.parse(editEventDateString[6]) + (int.parse(editEventDateString[5]) * 10);
                     int year = int.parse(editEventDateString[3]) + (int.parse(editEventDateString[2]) * 10) + (int.parse(editEventDateString[1]) * 100) + (int.parse(editEventDateString[0]) * 1000);
                     editEventDate = DateTime(year, month, date);
+                    print(editEventDateString+editEventTitle);
                     FirebaseFirestore.instance.collection('events')
-                        .doc(editEventDateString+editEventTitle)
-                        .update({
-                      'date' : date,
-                      'month' : month,
-                      'year' : year,
-                      'title' : editEventTitle,
-                    })
+                      .doc(editEventUid)
+                      .delete()
                         .then((value) {
-                      Navigator.pushNamed(context, LoadingScreen.id);
-                    })
+                          FirebaseFirestore.instance.collection('events')
+                            .doc(editEventDateString+editEventTitle)
+                            .set({
+                              'date' : date,
+                              'month' : month,
+                              'year' : year,
+                              'title' : editEventTitle,
+                          })
+                          .then((value) {
+                            Navigator.pushNamed(context, LoadingScreen.id);
+                          })
+                          .catchError((err) {
+                            print(err);
+                          });
+                        })
                         .catchError((err) {
-                      print(err);
-                    });
+                          print(err);
+                        });
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red),

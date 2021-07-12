@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:events_manager_app/main.dart';
 import 'package:events_manager_app/screens/loading_screen.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
 
@@ -102,6 +106,15 @@ class _LoginPageState extends State<LoginPage> {
                       prefs.setString('email', loginEmail);
                       email = loginEmail;
                       validateAdmin(email);
+                      Directory appDocDirectory = await getApplicationDocumentsDirectory();
+                      File pathProfileImage = File('${appDocDirectory.path}/profile.png');
+                      try{
+                        await FirebaseStorage.instance
+                            .ref('$email/profile.png')
+                            .writeToFile(pathProfileImage);
+                      } on FirebaseException catch (err){
+                        print(err);
+                      }
                       Navigator.pushNamed(context, LoadingScreen.id);
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
@@ -141,8 +154,15 @@ class _LoginPageState extends State<LoginPage> {
                             .collection('users')
                             .doc(email)
                             .get()
-                            .then((DocumentSnapshot documentSnapshot) {
+                            .then((DocumentSnapshot documentSnapshot) async {
                           if (documentSnapshot.exists) {
+                            try{
+                              await FirebaseStorage.instance
+                                  .ref('$email/profile.png')
+                                  .writeToFile(File(profileImagePath));
+                            } on FirebaseException catch (err){
+                              print(err);
+                            }
                             Navigator.pushNamed(context, LoadingScreen.id);
                           }
                           else{
@@ -151,8 +171,17 @@ class _LoginPageState extends State<LoginPage> {
                                 .set({
                               'todo' : [],
                               'email' : email,
+                              'name' : googleUser.displayName,
                             })
-                                .then((value) {
+                                .then((value) async{
+                              File file = File(profileImagePath);
+                              try{
+                                await FirebaseStorage.instance
+                                    .ref('$email/profile.png')
+                                    .putFile(file);
+                              } on FirebaseException catch (err){
+                                print(err);
+                              }
                               Navigator.pushNamed(context, LoadingScreen.id);
                             })
                                 .catchError((err) {
