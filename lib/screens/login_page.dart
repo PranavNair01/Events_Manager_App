@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:events_manager_app/main.dart';
 import 'package:events_manager_app/screens/loading_screen.dart';
+import 'package:events_manager_app/utils/alert.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -121,14 +122,14 @@ class _LoginPageState extends State<LoginPage> {
                             .ref('$email/profile.png')
                             .writeToFile(pathProfileImage);
                       } on FirebaseException catch (err){
-                        print(err);
+                        showAlert(context, err.toString());
                       }
                       Navigator.pushNamed(context, LoadingScreen.id);
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
-                        print('No user found for that email.');
+                        showAlert(context, 'No such user found');
                       } else if (e.code == 'wrong-password') {
-                        print('Wrong password provided for that user.');
+                        showAlert(context, 'Invalid Password');
                       }
                     }
                   },
@@ -169,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                                   .ref('$email/profile.png')
                                   .writeToFile(File(profileImagePath));
                             } on FirebaseException catch (err){
-                              print(err);
+                              showAlert(context, err.toString());
                             }
                             Navigator.pushNamed(context, LoadingScreen.id);
                           }
@@ -188,12 +189,12 @@ class _LoginPageState extends State<LoginPage> {
                                     .ref('$email/profile.png')
                                     .putFile(file);
                               } on FirebaseException catch (err){
-                                print(err);
+                                showAlert(context, err.toString());
                               }
                               Navigator.pushNamed(context, LoadingScreen.id);
                             })
                                 .catchError((err) {
-                              print(err);
+                              showAlert(context, err);
                             });
                           }
                         });
@@ -201,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                       });
                     }
                     catch (err){
-                      print(err);
+                      showAlert(context, err.toString());
                     }
                   },
                 )

@@ -1,4 +1,5 @@
 import 'package:events_manager_app/screens/loading_screen.dart';
+import 'package:events_manager_app/utils/alert.dart';
 import 'package:events_manager_app/utils/events.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -114,7 +115,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 ElevatedButton(
                   onPressed: () async{
                     if(eventDateString == null){
-                      print('Null event');
+                      showAlert(context, 'Add Event Details');
                     }
                     else{
                       int date = int.parse(eventDateString[9]) + (int.parse(eventDateString[8]) * 10);
@@ -131,10 +132,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
                           'board' : eventBoard,
                         })
                         .then((value) {
+                          ScaffoldMessenger.of(context).showSnackBar(mySnackBar(context, 'Event added. Restart app to see changes.'));
                           Navigator.pushNamed(context, LoadingScreen.id);
                         })
                         .catchError((err) {
-                          print(err);
+                          showAlert(context, err);
                         });
                     }
                   },

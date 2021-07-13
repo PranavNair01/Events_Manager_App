@@ -7,6 +7,7 @@ import 'package:events_manager_app/screens/loading_screen.dart';
 import 'package:events_manager_app/screens/todo_screen.dart';
 import 'package:events_manager_app/screens/add_event_screen.dart';
 import 'package:events_manager_app/screens/edit_event_screen.dart';
+import 'package:events_manager_app/utils/alert.dart';
 import 'package:events_manager_app/utils/events.dart';
 import 'package:events_manager_app/utils/todo.dart';
 import 'package:events_manager_app/main.dart';
@@ -196,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.pushNamed(context, LoadingScreen.id);
                               })
                                   .catchError((err) {
-                                print(err);
+                                showAlert(context, err);
                               });
                             }
                           },
@@ -292,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   .ref('profile.png')
                   .writeToFile(File(profileImagePath));
             } on FirebaseException catch (err){
-              print(err);
+              showAlert(context, err.toString());
             }
             Navigator.popAndPushNamed(context, WelcomeScreen.id);
           },

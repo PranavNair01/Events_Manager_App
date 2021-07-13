@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:events_manager_app/main.dart';
 import 'package:events_manager_app/screens/loading_screen.dart';
+import 'package:events_manager_app/utils/alert.dart';
 import 'package:events_manager_app/utils/todo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -37,7 +38,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: ListView.builder(
+        child: myToDoEvents.length != 0 ? ListView.builder(
           itemCount: myToDoEvents.length,
           itemBuilder: (context, index){
             return Container(
@@ -74,7 +75,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
                           Navigator.pushNamed(context, LoadingScreen.id);
                         })
                         .catchError((err){
-                          print(err);
+                          showAlert(context, err);
                         });
                     });
                   },
@@ -82,6 +83,13 @@ class _ToDoScreenState extends State<ToDoScreen> {
               ),
             );
           },
+        ) : Center(
+          child: Text(
+            'No events available in your To-Do. :/',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
     );

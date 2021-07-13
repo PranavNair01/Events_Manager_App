@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:events_manager_app/screens/loading_screen.dart';
+import 'package:events_manager_app/utils/alert.dart';
 import 'package:events_manager_app/utils/events.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -135,14 +136,15 @@ class _EditEventScreenState extends State<EditEventScreen> {
                               'board' : editEventBoard,
                           })
                           .then((value) {
+                            ScaffoldMessenger.of(context).showSnackBar(mySnackBar(context, 'Edit successful. Restart app to see changes.'));
                             Navigator.pushNamed(context, LoadingScreen.id);
                           })
                           .catchError((err) {
-                            print(err);
+                            showAlert(context, err.toString());
                           });
                         })
                         .catchError((err) {
-                          print(err);
+                          showAlert(context, err);
                         });
                   },
                   style: ButtonStyle(
@@ -158,10 +160,11 @@ class _EditEventScreenState extends State<EditEventScreen> {
                         .doc(editEventUid)
                         .delete()
                         .then((value) {
+                          ScaffoldMessenger.of(context).showSnackBar(mySnackBar(context, 'Event deleted. Restart app to see changes.'));
                           Navigator.pushNamed(context, LoadingScreen.id);
                       })
                         .catchError((err) {
-                          print(err);
+                          showAlert(context, err);
                       });
                   },
                   style: ButtonStyle(

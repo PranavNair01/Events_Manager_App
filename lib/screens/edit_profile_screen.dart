@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:events_manager_app/main.dart';
 import 'package:events_manager_app/screens/loading_screen.dart';
+import 'package:events_manager_app/utils/alert.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -95,7 +96,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           imageFile = File(pickedFile!.path);
                         });
                       } catch (err){
-                        print(err);
+                        showAlert(context, err.toString());
                       }
                     },
                     style: ButtonStyle(
@@ -116,7 +117,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           imageFile = File(pickedFile!.path);
                         });
                       } catch (err){
-                        print(err);
+                        showAlert(context, err.toString());
                       }
                     },
                     style: ButtonStyle(
@@ -148,13 +149,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   await FirebaseStorage.instance
                       .ref('$email/profile.png')
                       .putFile(imageFile);
+                  ScaffoldMessenger.of(context).showSnackBar(mySnackBar(context, 'Edit successful. Restart app to see changes.'));
                   Navigator.pushNamed(context, LoadingScreen.id);
                 } on FirebaseException catch (err){
-                  print(err);
+                  showAlert(context, err.toString());
                 }
               })
               .catchError((err){
-                print(err);
+                showAlert(context, err);
               });
         },
       ),
