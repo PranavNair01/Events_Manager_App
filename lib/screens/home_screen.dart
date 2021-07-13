@@ -41,6 +41,12 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
+  Map<String, Color> colorCodes = {
+    'Technical Board' : Color(Colors.blue.value),
+    'Cultural Board' : Color(Colors.red.value),
+    'Sports Board' : Color(Colors.green.value),
+    'Welfare Board' : Color(Colors.yellow.value),
+  };
 
   @override
   void initState() {
@@ -140,6 +146,17 @@ class _HomeScreenState extends State<HomeScreen> {
             onPageChanged: (focusedDay) {
               _focusedDay = focusedDay;
             },
+            calendarBuilders: CalendarBuilders(
+              singleMarkerBuilder: (context, date, event){
+                Color? cor = colorCodes[event.board];
+                return Container(
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: cor),
+                  width: 7.0,
+                  height: 7.0,
+                  margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                );
+              }
+            ),
           ),
           const SizedBox(height: 8.0),
           Expanded(
@@ -159,8 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: ListTile(
-                        onTap: () => print('${value[index]}'),
-                        title: Text('${value[index]}'),
+                        onTap: () => print('${value[index].title}'),
+                        title: Text('${value[index].title}'),
+                        subtitle: Text('${value[index].board}'),
                         trailing: IconButton(
                           icon: Icon(
                               Icons.playlist_add
@@ -222,6 +240,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     'Edit Profile'
                 ),
               ),
+              SwitchListTile(
+                value: isDark,
+                onChanged: (val) async {
+                  setState((){
+                    isDark = val;
+                  });
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setBool('theme', isDark);
+                },
+                title: Text(
+                  'Theme',
+                ),
+                activeTrackColor: Colors.red,
+                inactiveThumbColor: Colors.black,
+              ),
             ],
           ),
         ),
@@ -230,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         title: Text(
           'Home',
         ),
@@ -267,7 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: tabs[currIndex],
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         child: Icon(
           Icons.refresh,
         ),
@@ -291,10 +324,10 @@ class _HomeScreenState extends State<HomeScreen> {
               )
           ),
         ],
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         currentIndex: currIndex,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.black,
+        // selectedItemColor: Colors.white,
+        // unselectedItemColor: Colors.black,
         onTap: (val){
           setState(() {
             currIndex = val;

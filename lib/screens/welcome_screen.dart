@@ -1,3 +1,4 @@
+import 'package:events_manager_app/main.dart';
 import 'package:events_manager_app/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -14,7 +15,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       body: SafeArea(
         child: SizedBox.expand(
           child: Column(
@@ -24,8 +25,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               SizedBox(
                 width: 300,
                 child: DefaultTextStyle(
-                  style: const TextStyle(
-                    color: Colors.black,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
                     fontSize: 30.0,
                     fontFamily: 'Agne',
                     fontWeight: FontWeight.bold,
@@ -45,7 +46,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   Navigator.pushNamed(context, LoginPage.id);
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                  // backgroundColor: MaterialStateProperty.all(Colors.red),
 
                 ),
                 child: Text(
@@ -60,7 +61,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   Navigator.pushNamed(context, SignUpPage.id);
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                  // backgroundColor: MaterialStateProperty.all(Colors.red),
 
                 ),
                 child: Text(

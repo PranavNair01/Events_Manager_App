@@ -23,9 +23,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -62,12 +62,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide:
-                    BorderSide(color: Colors.redAccent, width: 1.0),
+                    BorderSide(
+                        // color: Colors.redAccent,
+                        width: 1.0),
                     borderRadius: BorderRadius.all(Radius.circular(32.0)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide:
-                    BorderSide(color: Colors.redAccent, width: 2.0),
+                    BorderSide(
+                        // color: Colors.redAccent,
+                        width: 2.0),
                     borderRadius: BorderRadius.all(Radius.circular(32.0)),
                   ),
                 ),
@@ -95,7 +99,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       }
                     },
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.red),
+                      // backgroundColor: MaterialStateProperty.all(Colors.red),
                     ),
                     child: Text(
                         'Pick from gallery'
@@ -116,7 +120,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       }
                     },
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.red),
+                      // backgroundColor: MaterialStateProperty.all(Colors.red),
                     ),
                     child: Text(
                         'Take a photo'
@@ -132,7 +136,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: Icon(
           Icons.check,
         ),
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         onPressed: () async{
           FirebaseFirestore.instance.collection('users')
               .doc(email)

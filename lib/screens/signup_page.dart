@@ -28,7 +28,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       body: SafeArea(
         child: SizedBox.expand(
           child: Padding(
@@ -61,12 +61,16 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.redAccent, width: 1.0),
+                      BorderSide(
+                          // color: Colors.redAccent,
+                          width: 1.0),
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.redAccent, width: 2.0),
+                      BorderSide(
+                          // color: Colors.redAccent,
+                          width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     ),
                   ),
@@ -85,12 +89,16 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.redAccent, width: 1.0),
+                      BorderSide(
+                          // color: Colors.redAccent,
+                          width: 1.0),
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.redAccent, width: 2.0),
+                      BorderSide(
+                          // color: Colors.redAccent,
+                          width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     ),
                   ),
@@ -109,12 +117,16 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.redAccent, width: 1.0),
+                      BorderSide(
+                          // color: Colors.redAccent,
+                          width: 1.0),
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.redAccent, width: 2.0),
+                      BorderSide(
+                          // color: Colors.redAccent,
+                          width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     ),
                   ),
@@ -163,7 +175,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     }
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                    // backgroundColor: MaterialStateProperty.all(Colors.red),
                   ),
                   child: Text(
                     'Sign Up'

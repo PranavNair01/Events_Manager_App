@@ -24,6 +24,8 @@ Future<void> main() async{
   await Firebase.initializeApp();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   email = prefs.getString('email');
+  var temp = prefs.getBool('theme');
+  isDark = temp != null ? temp : false;
   validateAdmin(email);
   await getProfileImage();
   runApp(
@@ -79,6 +81,7 @@ Future<void> getProfileImage() async{
 var email;
 String profileImagePath = '';
 bool isAdmin = false;
+bool isDark = false;
 
 class MyApp extends StatelessWidget {
 
@@ -86,6 +89,43 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Events Manager App',
+      theme: isDark ?
+          ThemeData(
+            brightness: Brightness.dark,
+            appBarTheme: AppBarTheme(
+              iconTheme: IconThemeData(
+                color: Colors.red,
+              ),
+              textTheme: TextTheme(
+                title: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                )
+              )
+            ),
+            bottomNavigationBarTheme: BottomNavigationBarThemeData(
+              selectedItemColor: Colors.red,
+            ),
+            floatingActionButtonTheme: FloatingActionButtonThemeData(
+              foregroundColor: Colors.red,
+              backgroundColor: Colors.black,
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red),
+              )
+            )
+          )
+      : ThemeData(
+        primarySwatch: Colors.red,
+        primaryColor: Colors.red,
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.red,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.black,
+        )
+      ),
       routes: {
         WelcomeScreen.id : (context) => WelcomeScreen(),
         SignUpPage.id : (context) => SignUpPage(),

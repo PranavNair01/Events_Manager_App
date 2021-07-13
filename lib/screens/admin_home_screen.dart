@@ -41,6 +41,12 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
+  Map<String, Color> colorCodes = {
+    'Technical Board' : Color(Colors.blue.value),
+    'Cultural Board' : Color(Colors.red.value),
+    'Sports Board' : Color(Colors.green.value),
+    'Welfare Board' : Color(Colors.yellow.value),
+  };
 
   @override
   void initState() {
@@ -113,33 +119,49 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     List<Widget> tabs = [
       Column(
         children: [
-          TableCalendar<Event>(
-            firstDay: kFirstDay,
-            lastDay: kLastDay,
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
-            calendarFormat: _calendarFormat,
-            rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: _getEventsForDay,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: CalendarStyle(
-              // Use `CalendarStyle` to customize the UI
-              outsideDaysVisible: false,
+          Card(
+            color: isDark ? Colors.red.shade300 : Colors.grey.shade200,
+            child: TableCalendar<Event>(
+              firstDay: kFirstDay,
+              lastDay: kLastDay,
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              rangeStartDay: _rangeStart,
+              rangeEndDay: _rangeEnd,
+              calendarFormat: _calendarFormat,
+              rangeSelectionMode: _rangeSelectionMode,
+              eventLoader: _getEventsForDay,
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              calendarStyle: CalendarStyle(
+                // Use `CalendarStyle` to customize the UI
+                outsideDaysVisible: false,
+
+              ),
+              onDaySelected: _onDaySelected,
+              onRangeSelected: _onRangeSelected,
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
+                _focusedDay = focusedDay;
+              },
+
+              calendarBuilders: CalendarBuilders(
+                  singleMarkerBuilder: (context, date, event){
+                    Color? cor = colorCodes[event.board];
+                    return Container(
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: cor),
+                      width: 7.0,
+                      height: 7.0,
+                      margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                    );
+                  }
+              ),
             ),
-            onDaySelected: _onDaySelected,
-            onRangeSelected: _onRangeSelected,
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
           ),
           const SizedBox(height: 8.0),
           Expanded(
@@ -159,8 +181,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: ListTile(
-                        onTap: () => print('${value[index]}'),
-                        title: Text('${value[index]}'),
+                        onTap: () => print('${value[index].title}'),
+                        title: Text('${value[index].title}'),
+                        subtitle: Text('${value[index].board}'),
                         leading: IconButton(
                           icon: Icon(
                             Icons.edit,
@@ -168,6 +191,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                           onPressed: (){
                             editEventTitle = value[index].title;
                             editEventUid = value[index].uid;
+                            editEventBoard = value[index].board;
                             editEventDate = _focusedDay;
                             Navigator.pushNamed(context, EditEventScreen.id);
                           },
@@ -227,11 +251,26 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                   Navigator.pushNamed(context, EditProfileScreen.id);
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                  // backgroundColor: MaterialStateProperty.all(Colors.red),
                 ),
                 child: Text(
                     'Edit Profile'
                 ),
+              ),
+              SwitchListTile(
+                value: isDark,
+                onChanged: (val) async {
+                  setState((){
+                    isDark = val;
+                  });
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setBool('theme', isDark);
+                },
+                title: Text(
+                  'Theme',
+                ),
+                activeTrackColor: Colors.red,
+                inactiveThumbColor: Colors.black,
               ),
             ],
           ),
@@ -241,7 +280,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         title: Text(
           'Home',
         ),
@@ -286,7 +325,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       ),
       body: tabs[currIndex],
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         child: Icon(
           Icons.refresh,
         ),
@@ -310,10 +349,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             )
           ),
         ],
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         currentIndex: currIndex,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.black,
+        // selectedItemColor: Colors.white,
+        // unselectedItemColor: Colors.black,
         onTap: (val){
           setState(() {
             currIndex = val;

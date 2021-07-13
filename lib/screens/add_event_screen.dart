@@ -15,15 +15,16 @@ class AddEventScreen extends StatefulWidget {
 class _AddEventScreenState extends State<AddEventScreen> {
 
   String eventTitle = "";
+  String eventBoard = "Technical Board";
   var eventDateString;
   DateTime eventDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -64,12 +65,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.redAccent, width: 1.0),
+                      BorderSide(
+                          // color: Colors.redAccent,
+                          width: 1.0),
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.redAccent, width: 2.0),
+                      BorderSide(
+                          // color: Colors.redAccent,
+                          width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     ),
                   ),
@@ -87,6 +92,25 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     print(eventDateString);
                   },
                 ),
+                DropdownButton(
+                  // dropdownColor: Colors.red,
+                  hint: Text(
+                    'Board: ',
+                  ),
+                  value: eventBoard,
+                  onChanged: (String? val){
+                    setState(() {
+                      eventBoard = val!;
+                    });
+                  },
+                  items: <String>['Technical Board', 'Cultural Board', 'Sports Board', 'Welfare Board']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
                 ElevatedButton(
                   onPressed: () async{
                     if(eventDateString == null){
@@ -103,7 +127,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
                           'date' : date,
                           'month' : month,
                           'year' : year,
-                          'title' : eventTitle
+                          'title' : eventTitle,
+                          'board' : eventBoard,
                         })
                         .then((value) {
                           Navigator.pushNamed(context, LoadingScreen.id);
@@ -114,7 +139,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     }
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                    // backgroundColor: MaterialStateProperty.all(Colors.red),
                   ),
                   child: Text(
                       'Add Event'

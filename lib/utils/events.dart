@@ -9,9 +9,10 @@ import 'package:events_manager_app/screens/loading_screen.dart';
 /// Example event class.
 class Event {
   final String title;
+  final String board;
   final String uid;
 
-  const Event(@required this.title, @required this.uid);
+  const Event({required this.title, required this.board, required this.uid});
 
   @override
   String toString() => title;
@@ -37,17 +38,19 @@ Future<void> loadEvents() async{
 
   for(var entry in allEvents){
     DateTime thisDate = DateTime(entry['year'], entry['month'], entry['date']);
+    String thisTitle = entry['title'];
+    String thisBoard = entry['board'];
     String dateString = (entry['date'] < 10) ? '0'+entry['date'].toString() : entry['date'].toString();
     String monthString = (entry['month'] < 10) ? '0'+entry['month'].toString() : entry['month'].toString();
     String yearString = entry['year'].toString();
-    String thisUid = yearString+'-'+monthString+'-'+dateString;
+    String thisUid = yearString+'-'+monthString+'-'+dateString+thisTitle;
     if(kEventSource.containsKey(thisDate))
-      kEventSource[thisDate]!.add(Event(entry['title'], thisUid+entry['title']));
+      kEventSource[thisDate]!.add(Event(title: thisTitle, board: thisBoard, uid: thisUid));
     else
-      kEventSource[thisDate] = [Event(entry['title'], thisUid+entry['title'])];
+      kEventSource[thisDate] = [Event(title: thisTitle, board: thisBoard, uid: thisUid)];
     for(var uid in myToDo){
-      if(uid == thisUid+entry['title'])
-        myToDoEvents.add(Event(entry['title'], uid));
+      if(uid == thisUid)
+        myToDoEvents.add(Event(title: thisTitle, board: thisBoard, uid: thisUid));
     }
   }
   print('Updated');

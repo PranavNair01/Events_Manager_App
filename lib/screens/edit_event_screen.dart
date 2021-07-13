@@ -15,6 +15,7 @@ class EditEventScreen extends StatefulWidget {
 DateTime editEventDate = DateTime.now();
 String editEventTitle = '';
 String editEventUid = '';
+String editEventBoard = '';
 String editEventDateString = editEventDate.toString();
 
 class _EditEventScreenState extends State<EditEventScreen> {
@@ -23,9 +24,9 @@ class _EditEventScreenState extends State<EditEventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -66,12 +67,16 @@ class _EditEventScreenState extends State<EditEventScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.redAccent, width: 1.0),
+                      BorderSide(
+                          // color: Colors.redAccent,
+                          width: 1.0),
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide:
-                      BorderSide(color: Colors.redAccent, width: 2.0),
+                      BorderSide(
+                          // color: Colors.redAccent,
+                          width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(32.0)),
                     ),
                   ),
@@ -89,6 +94,25 @@ class _EditEventScreenState extends State<EditEventScreen> {
                     editEventDateString = val;
                     print(editEventDateString);
                   },
+                ),
+                DropdownButton(
+                  // dropdownColor: Colors.red,
+                  hint: Text(
+                    'Board: ',
+                  ),
+                  value: editEventBoard,
+                  onChanged: (String? val){
+                    setState(() {
+                      editEventBoard = val!;
+                    });
+                  },
+                  items: <String>['Technical Board', 'Cultural Board', 'Sports Board', 'Welfare Board']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                 ),
                 ElevatedButton(
                   onPressed: () async{
@@ -108,6 +132,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                               'month' : month,
                               'year' : year,
                               'title' : editEventTitle,
+                              'board' : editEventBoard,
                           })
                           .then((value) {
                             Navigator.pushNamed(context, LoadingScreen.id);
@@ -121,7 +146,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                         });
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                    // backgroundColor: MaterialStateProperty.all(Colors.red),
                   ),
                   child: Text(
                       'Edit Event'
@@ -140,7 +165,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                       });
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                    // backgroundColor: MaterialStateProperty.all(Colors.red),
                   ),
                   child: Text(
                       'Delete Event'
